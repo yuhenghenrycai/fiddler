@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "fiddler"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+accelerate = "0.26.1"
+torch = "2.1.2"
+transformers = "4.36.2"
+numpy = "1.24.4"
+tqdm = "4.66.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Development dependencies
+[tool.poetry.group.dev.dependencies]
+hqq = { git = "https://github.com/mobiusml/hqq.git", rev = "37502bea31f2969c6680c0c4a88ca74b3bb234a5" } 
