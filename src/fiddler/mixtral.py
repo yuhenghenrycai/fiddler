@@ -440,6 +440,8 @@ class FiddlerMixtral:
                 .unsqueeze(0)
                 .view(-1, 1)
             )
+            print("input_ids: ", input_ids)
+            print("position_ids: ", position_ids)
             # position_ids.shape: (1, 1)
             if not is_decode:
                 prefill_time += time.time() - tick
