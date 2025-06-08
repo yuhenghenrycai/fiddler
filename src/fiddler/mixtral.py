@@ -395,7 +395,7 @@ class FiddlerMixtral:
         search_start = False
         probs = torch.full((input_ids.shape[0], 1), 1.0)
 
-        for i_token in range(output_token):
+        for _ in range(output_token):
             if self.beam_width == 1:
                 print(self.tokenizer.decode(input_ids[0]))
                 # TODO: streaming output for beam search
@@ -451,6 +451,11 @@ class FiddlerMixtral:
 
         print("--------------------")
         print(f"Input: {text}")
+        print("--------------------")
+        print("max_ids: ", max_ids)
+        print("--------------------")
+        print("decode_strings: ", decode_strings)
+        print("--------------------")
         print(f"Output: {decode_strings[max_ids[0]]}")
 
         return (
