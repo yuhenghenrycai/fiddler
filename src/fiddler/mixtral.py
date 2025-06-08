@@ -379,6 +379,10 @@ class FiddlerMixtral:
         self.cnt_expert_all = 0
         
         input_ids, position_ids = self.tokenize(text)
+        print("input_ids.shape: ", input_ids.shape)
+        print("input_ids: ", input_ids)
+        print("position_ids.shape: ", position_ids.shape)
+        print("position_ids: ", position_ids)
 
         if input_token is not None:
             input_ids = input_ids[:, :input_token]
