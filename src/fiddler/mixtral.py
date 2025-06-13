@@ -339,10 +339,18 @@ class FiddlerMixtral:
 
     def bring_expert_to_gpu(self):
         """Bring part of expert layers to GPU"""
+        accu_time = 0
+        accu_cnt = 0
         for i in range(self.n_layer):
             for j in range(self.n_expert):
                 if self.is_expert_in_gpu(i, j):
+                    begin = time.time()
                     self.model.layers[i].block_sparse_moe.experts[j].to(self.dev)
+                    end = time.time()
+                    accu_time += end - begin
+                    accu_cnt += 1
+                    print(f"Time taken to move expert {j} to GPU: {end - begin} seconds")
+        print(f"Average time taken to move expert to GPU: {accu_time / accu_cnt} seconds")
 
     def is_expert_in_gpu(self, i_layer, i_expert):
         """Determine if the expert is in GPU"""
@@ -635,12 +643,15 @@ class FiddlerMixtral:
                     top_2_list = top_2s[i_expert].tolist()
                     idx_list = idxs[i_expert].tolist()
                     current_state = inps[None, top_2_list].reshape(-1, hidden_dim)
+                    begin_cpu = time.time()
                     current_state = self.run_expert_at_cpu(
                         i_layer,
                         i_expert,
                         current_state.to("cpu"),
                         routing_weights[top_2_list, idx_list, None].to("cpu"),
                     )
+                    end_cpu = time.time()
+                    print(f"Time taken to run expert {i_expert} at CPU: {end_cpu - begin_cpu} seconds")
                     inps_after_experts.index_add_(
                         0,
                         top_2s[i_expert].to(self.dev, non_blocking=True),
