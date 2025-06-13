@@ -583,6 +583,7 @@ class FiddlerMixtral:
                     top_2s.append(top_2)
                     # expected latency at CPU: number of token * cost_at_cpu
                     # expected latency at GPU: cost_at_gpu (constant)
+                    print(f"Expert {i_expert}: {top_2.shape[0]} tokens")
                     cost_per_expert[i_expert, 0] = top_2.shape[0] * self.latency_cpu
                     cost_per_expert[i_expert, 1] = self.latency_gpu
                     if self.is_expert_in_gpu(i_layer, i_expert):
