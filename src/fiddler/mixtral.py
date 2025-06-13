@@ -623,16 +623,25 @@ class FiddlerMixtral:
                     idx_list = idxs[i_expert].tolist()
                     current_state = inps[None, top_2_list].reshape(-1, hidden_dim)
                     if self.is_expert_in_gpu(i_layer, i_expert):
+                        begin_running_gpu = time.time()
                         current_state = experts[i_expert](
                             current_state, routing_weights[top_2_list, idx_list, None]
                         )
+                        end_running_gpu = time.time()
+                        print(f"Time taken to run expert {i_expert} at GPU without loading: {end_running_gpu - begin_running_gpu} seconds")
                     else:
+                        begin_loading_gpu = time.time()
                         self.expert_placeholder.load_state_dict(
                             experts[i_expert].state_dict()
                         )
+                        end_loading_gpu = time.time()
+                        print(f"Time taken to load expert {i_expert} to GPU: {end_loading_gpu - begin_loading_gpu} seconds")
+                        begin_running_gpu = time.time()
                         current_state = self.expert_placeholder(
                             current_state, routing_weights[top_2_list, idx_list, None]
                         )
+                        end_running_gpu = time.time()
+                        print(f"Time taken to run expert {i_expert} at GPU: {end_running_gpu - begin_running_gpu} seconds")
                     inps_after_experts.index_add_(
                         0,
                         top_2s[i_expert].to(self.dev, non_blocking=True),
